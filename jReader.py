@@ -48,15 +48,17 @@ class JSONconfig:
 
 class SchedReader:
 
-    def __init__(self, filename=None, default_values=None, file_type='json'):
+    def __init__(self, filename=None, device_type=None):
+        # sched type can be "on_off", or "window"
         self.def_values = {}
         self.data_from_file = None
         self.filename = filename
+        self.device_type = device_type
 
         self.read_file()
 
-    def read_file(self, file=None):
-        if file != None:
+    def read_file(self, file1=None):
+        if file1 != None:
             self.filename = file
 
         if os.path.isfile(self.filename) is True:
@@ -69,20 +71,34 @@ class SchedReader:
         return self.data_from_file
 
     def create_default_file(self):
-        self.def_values = {"topic": 'HomePi/Dvir/Windows/Win1',
-                           "schedule_up": [
-                               {"start_days": [1, 2, 3, 4, 5], "end_days": [1, 2, 3, 4, 5], "start_time": "06:45:00",
-                                "end_time": "06:45:05"},
-                               {"start_days": [1, 2, 3, 4, 5, 6, 7], "end_days": [1, 2, 3, 4, 5, 6, 7],
-                                "start_time": "02:01:10",
-                                "end_time": "02:01:15"}],
-                           "schedule_down": [{"start_days": [1, 2, 3, 4, 5, 6, 7], "end_days": [1, 2, 3, 4, 5, 6, 7],
-                                              "start_time": "02:00:00",
-                                              "end_time": "02:01:00"},
-                                             {"start_days": [1, 2, 3, 4, 5], "end_days": [1, 2, 3, 4, 5],
-                                              "start_time": "08:00:00",
-                                              "end_time": "08:01:00"}],
-                           "enable": True}
+        if self.device_type == "on_off" or self.device_type is None:
+            self.def_values = {"topic": 'HomePi/Dvir/Switches/S100',
+                               "schedule": [
+                                   {"start_days": [1, 2, 3, 4, 5], "end_days": [1, 2, 3, 4, 5],
+                                    "start_time": "06:45:00",
+                                    "end_time": "06:45:05"},
+                                   {"start_days": [1, 2, 3, 4, 5, 6, 7], "end_days": [1, 2, 3, 4, 5, 6, 7],
+                                    "start_time": "02:01:10",
+                                    "end_time": "02:01:15"}],
+                               "enable": True}
+
+        elif self.device_type == "window":
+            self.def_values = {"topic": 'HomePi/Dvir/Windows/Win100',
+                               "schedule_up": [
+                                   {"start_days": [1, 2, 3, 4, 5], "end_days": [1, 2, 3, 4, 5],
+                                    "start_time": "06:45:00",
+                                    "end_time": "06:45:05"},
+                                   {"start_days": [1, 2, 3, 4, 5, 6, 7], "end_days": [1, 2, 3, 4, 5, 6, 7],
+                                    "start_time": "02:01:10",
+                                    "end_time": "02:01:15"}],
+                               "schedule_down": [
+                                   {"start_days": [1, 2, 3, 4, 5, 6, 7], "end_days": [1, 2, 3, 4, 5, 6, 7],
+                                    "start_time": "02:00:00",
+                                    "end_time": "02:01:00"},
+                                   {"start_days": [1, 2, 3, 4, 5], "end_days": [1, 2, 3, 4, 5],
+                                    "start_time": "08:00:00",
+                                    "end_time": "08:01:00"}],
+                               "enable": True}
         self.write2file(self.def_values)
 
     def write2file(self, dict):
@@ -114,5 +130,6 @@ class SchedReader:
 
 
 if __name__ == "__main__":
-    a = JSONconfig('/home/guy/github/modules/test1.json')
+    # a = JSONconfig('/home/guy/github/modules/test1.json')
     # a.update_value('client_ID', "ESP8266")
+    a=SchedReader(filename='/Users/guy/github/modules/test1.json', device_type='on_off')
