@@ -1,6 +1,6 @@
 import cbit
 import subprocess
-import getip
+# import getip
 from sys import platform
 import datetime
 import os
@@ -195,15 +195,14 @@ class RunWeeklySchedule:
         def act_on_change(changed_task):
             m, n = changed_task[0], changed_task[1]
             if self.tasks_status[m][n]['state'] == 1:
-               self.log_record('Start Task[%d/%d]: Start %s, End %s' % (
-                   m, n, self.tasks_status[m][n]['start'], self.tasks_status[m][n]['end']))
-               self.on_func()
+                self.log_record('Start Task[%d/%d]: Start %s, End %s' % (
+                    m, n, self.tasks_status[m][n]['start'], self.tasks_status[m][n]['end']))
+                self.on_func()
             elif self.tasks_status[m][n]['state'] == 0:
                 self.off_func()
                 self.log_record('End Task[%d/%d]: Start %s, End %s' % (
-                   m, n, self.tasks_status[m][n]['start'], self.tasks_status[m][n]['end']))
+                    m, n, self.tasks_status[m][n]['start'], self.tasks_status[m][n]['end']))
                 self.convert_weekly_tasks_to_dates()
-
 
         def check_conditions_to_switch():
             for m, task in enumerate(self.tasks_status):
@@ -212,7 +211,7 @@ class RunWeeklySchedule:
                     # detect change from last cycle of check
                     if sub_task['state'] != self.previous_task_status[m][n]:
                         act_on_change([m, n])
-                    
+
                     self.previous_task_status[m][n] = self.tasks_status[m][n]['state']
 
         def inject_tasks_to_schedule():
@@ -229,9 +228,8 @@ class RunWeeklySchedule:
                 t = [datetime.datetime.strftime(day['start'], '[%A, %H:%M:%S]'),
                      datetime.datetime.strftime(day['end'], ' - [%A, %H:%M:%S]')]
                 msg = 'Task details [#%d/%d] %s %s' % (m, n, t[0], t[1])
-                # print(msg)
+                print(msg)
                 self.log_record(msg)
-                
 
     def get_task_report(self, task=None):
         now = datetime.datetime.now()
@@ -345,9 +343,11 @@ if __name__ == '__main__':
     # a.wifi_off()
 
     #
-    b = RunWeeklySchedule(on_func=on_func, off_func=off_func,
-                          sched_file='/home/guy/Documents/github/Rpi/SmartHome/LocalSwitch/sched.txt')
-    # # b.add_weekly_task(new_task={'start_days': [6], 'start_time': '19:03:00', 'end_days': [6], 'end_time': '23:08:00'})
+    b = RunWeeklySchedule(on_func=on_func, off_func=off_func)  # ,
+    # sched_file='/home/guy/Documents/github/Rpi/SmartHome/LocalSwitch/sched.txt')
+    b.add_weekly_task(
+        new_task={'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '23:12:40', 'end_days': [2, 3, 4, 5, 6, 7, 1],
+                  'end_time': '00:40:00'})
     # b.add_weekly_task_weekly_task(
     #     new_task={'start_days': [3], 'start_time': '09:03:30', 'end_days': [3], 'end_time': '18:11:00'})
     # b.add_weekly_task(
