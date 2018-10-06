@@ -1,3 +1,5 @@
+from sys import path
+path.append("/home/guy/github/lcd")
 import lcddriver
 import time
 
